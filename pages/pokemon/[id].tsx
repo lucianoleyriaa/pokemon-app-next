@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import Image from 'next/image';
 import { Button, Card, Container, Grid, Text } from '@nextui-org/react';
@@ -6,7 +6,7 @@ import { Button, Card, Container, Grid, Text } from '@nextui-org/react';
 import pokeApi from '../../api/pokeApi';
 import { PokemonDetail } from '../../interfaces';
 import { MainLayout } from '../../components/layouts';
-import { useRouter } from 'next/router';
+import { existInFavorites, onToggleFavorite } from '../../utils';
 
 interface PokemonData {
     pokemon: PokemonDetail
@@ -14,16 +14,17 @@ interface PokemonData {
 
 const PokemonPage: NextPage<PokemonData> = ({ pokemon }) => {
 
-    const router = useRouter();
+    const [isInFavorite, setisInFavorite] = useState(existInFavorites(pokemon.id));
 
-    // const navigateTo = () => {
-    //     router.push('/favorites');
-    // }
+    const handleFavorite = () => {
+        onToggleFavorite(pokemon.id);
+        setisInFavorite(!isInFavorite);
+    }
 
     return (
         <MainLayout title={ `Pokemons | ${ pokemon.name.replace(pokemon.name[0], pokemon.name[0].toUpperCase()) }` }>
             <Grid.Container css={{ marginTop: '20px' }} gap={2}>
-                <Grid xs={6} md={4}>
+                <Grid xs={12} sm={4} md={6}>
                     <Card>
                         <Card.Body>
                             <Image 
@@ -36,12 +37,14 @@ const PokemonPage: NextPage<PokemonData> = ({ pokemon }) => {
                     </Card>
                 </Grid>
 
-                <Grid xs={6} md={8}>
+                <Grid xs={12} sm={8} md={6}>
                     <Card>
                         <Card.Header css={{ display: 'flex', justifyContent: 'space-between' }}>
                             <Text transform='capitalize' h1 css={{ fontSize: '36px' }}>{ pokemon.name }</Text>
-                            <Button ghost rounded color='primary'>
-                                Add to favorites
+                            <Button onClick={ handleFavorite } ghost={ isInFavorite ? false : true } rounded color={ isInFavorite ? 'error' : 'success' }>
+                                {
+                                    !isInFavorite ? 'Add to favorites' : 'Remove from favorites'
+                                }
                             </Button>
                         </Card.Header>
 
