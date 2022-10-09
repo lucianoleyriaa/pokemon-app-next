@@ -1,18 +1,21 @@
-import React, { useState } from 'react';
-import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
-import Image from 'next/image';
-import { Button, Card, Container, Grid, Text } from '@nextui-org/react';
+import { useState } from "react";
+import { Grid, Card, Button, Container, Image, Text } from "@nextui-org/react";
+import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 
-import pokeApi from '../../api/pokeApi';
-import { PokemonDetail } from '../../interfaces';
-import { MainLayout } from '../../components/layouts';
-import { existInFavorites, getPokemonData, onToggleFavorite } from '../../utils';
+import pokeApi from "../../api/pokeApi";
+import { MainLayout } from "../../components/layouts";
+import { PokemonDetail, PokemonList, Pokemons } from "../../interfaces";
+import { existInFavorites, getPokemonData, onToggleFavorite } from "../../utils";
 
-interface PokemonData {
-    pokemon: PokemonDetail
+interface pokemonsSlug {
+    params: { name: string }
 }
 
-const PokemonPage: NextPage<PokemonData> = ({ pokemon }) => {
+interface Props {
+    pokemon: PokemonDetail,
+}
+
+const PokemonByNamePage: NextPage<Props> = ({ pokemon }) => {
 
     const [isInFavorite, setisInFavorite] = useState(existInFavorites(pokemon.id));
 
@@ -84,35 +87,33 @@ const PokemonPage: NextPage<PokemonData> = ({ pokemon }) => {
     );
 }
 
-// This function generates all the pages
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
 
-    type pokemonParams = {
-        params: {
-            id: string
-        }
-    }
+    const { data } = await pokeApi.get<PokemonList>(`/pokemon?limit=151`);
+    const pokemons: Pokemons[] = data.results;
 
-    const pokemonPages: pokemonParams[] = [...Array(151)].map( (p, i) => (
-        { params: { id: `${ i + 1 }`} }
-    ));
+    let pokemonSlug: pokemonsSlug[] = [];
+
+    for (const pokemon of pokemons) {
+        pokemonSlug.push({params: {name: pokemon.name}})
+    }
 
     return {
-        paths: pokemonPages,
-        fallback: false,
+        paths: pokemonSlug,
+        fallback: false,  
     }
+
 }
 
-// This function gets all data for each page
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 
-    const { id } = params as ({ id: string });
-
+    const { name } = params as ({ name: string });
+    
     return {
         props: {
-            pokemon: await getPokemonData(id),
+            pokemon: await getPokemonData(name),
         }
     }
 }
 
-export default PokemonPage;
+export default PokemonByNamePage;
