@@ -8,7 +8,7 @@ interface Props {
     title?: string
 }
 
-const origin = (typeof window === 'undefined') ? '' : window.location;
+const origin = (typeof window === 'undefined') ? '' : window.location.origin;
 
 export const MainLayout: FC<Props> = ({ children, title }) => {
   return (
@@ -21,7 +21,7 @@ export const MainLayout: FC<Props> = ({ children, title }) => {
 
             <meta property="og:title" content={`${ title } page`} />
             <meta property="og:description" content={`This page contains information about ${ title }`} />
-            <meta property="og:image" content={`${ origin }img/banner.png`} />
+            <meta property="og:image" content={`${ origin }/img/banner.png`} />
         </Head>
 
         <NavBar />
