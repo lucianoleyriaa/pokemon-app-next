@@ -6,12 +6,19 @@ import { Button, Card, Container, Grid, Text } from '@nextui-org/react';
 import pokeApi from '../../api/pokeApi';
 import { PokemonDetail } from '../../interfaces';
 import { MainLayout } from '../../components/layouts';
+import { useRouter } from 'next/router';
 
 interface PokemonData {
     pokemon: PokemonDetail
 }
 
 const PokemonPage: NextPage<PokemonData> = ({ pokemon }) => {
+
+    const router = useRouter();
+
+    // const navigateTo = () => {
+    //     router.push('/favorites');
+    // }
 
     return (
         <MainLayout title={ `Pokemons | ${ pokemon.name.replace(pokemon.name[0], pokemon.name[0].toUpperCase()) }` }>

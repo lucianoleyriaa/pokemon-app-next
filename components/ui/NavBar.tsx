@@ -1,6 +1,7 @@
 import { CSSProperties } from "react";
-import { useTheme, Text, Spacer } from '@nextui-org/react';
+import { useTheme, Text, Spacer, Link } from '@nextui-org/react';
 import Image from "next/image";
+import NextLink from "next/link";
 
 const navBarStyles: CSSProperties = {
     display: 'flex', 
@@ -20,12 +21,20 @@ export const NavBar = () => {
 
             <Image src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png" alt="Application icon" width={70} height={70} />
 
-            <Text color="white" h2>P</Text>
-            <Text color="white" h3>okemon</Text>
+            <NextLink href='/' passHref>
+                <Link>
+                    <Text color="white" h2>P</Text>
+                    <Text color="white" h3>okemon</Text>
+                </Link>
+            </NextLink>
 
             <Spacer css={{ flex: 1 }} />
 
-            <Text color="white">Favoritos</Text>
+            <NextLink href='/favorites' passHref>
+                <Link>
+                    <Text color="white">Favorites</Text>
+                </Link>
+            </NextLink>
         </div>
     )
 }
